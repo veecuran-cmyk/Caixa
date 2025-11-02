@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-g">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Sistema de Caixa</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+
+    <header>
+        🛒 Sistema de Caixa
+    </header>
+
+    <div class="container-principal">
+        
+        <main class="coluna-venda">
+            
+            <section class="card">
+                <div class="card-header">Adicionar Produto</div>
+                <div class="form-grupo">
+                    <label for="entrada-produto">Produto:</label>
+                    <input type="text" id="entrada-produto" placeholder="Nome do produto...">
+                </div>
+                <div class="form-grupo">
+                    <label for="entrada-quantidade">Qtde:</label>
+                    <input type="number" id="entrada-quantidade" value="1" min="1">
+                </div>
+                <button id="btn-adicionar-carrinho" class="btn btn-primario btn-block">Adicionar ao Carrinho</button>
+            </section>
+
+            <section class="card">
+                <div class="card-header">Buscar Produtos</div>
+                <div class="form-grupo">
+                    <label for="entrada-busca-produto">Buscar:</label>
+                    <input type="text" id="entrada-busca-produto" placeholder="Digite para buscar...">
+                </div>
+                <ul id="lista-busca-produtos">
+                    <li>Nenhum produto encontrado.</li>
+                </ul>
+            </section>
+
+            <section class="card" style="flex-grow: 1;">
+                <div class="card-header">Itens no Carrinho</div>
+                <ul id="lista-carrinho">
+                    </ul>
+                <div id="label-valor-total" class="total-carrinho">
+                    TOTAL: R$ 0.00
+                </div>
+                <div class="botoes-carrinho">
+                    <button id="btn-finalizar-venda" class="btn btn-sucesso" style="flex-grow: 1;">Finalizar Venda</button>
+                    <button id="btn-limpar-carrinho" class="btn btn-perigo">Limpar Carrinho</button>
+                </div>
+            </section>
+
+        </main>
+
+        <aside class="coluna-gerenciamento">
+            
+            <nav class="tabs">
+                <button class="tab-button active" data-tab="tab-recibo">Recibo</button>
+                <button class="tab-button" data-tab="tab-produtos">Gerenciar Produtos</button>
+                <button class="tab-button" data-tab="tab-historico">Histórico de Vendas</button>
+                <button class="tab-button" data-tab="tab-config">Configurações</button>
+            </nav>
+
+            <div id="tab-recibo" class="tab-content active">
+                <h3>Recibo / Nota Fiscal</h3>
+                <textarea id="recibo-texto" readonly></textarea>
+                <button id="btn-salvar-recibo" class="btn btn-secundario" style="margin-top: 0.5rem;">Salvar Recibo em .txt</button>
+            </div>
+
+            <div id="tab-produtos" class="tab-content">
+                <h3>Adicionar / Editar Produto</h3>
+                <form id="form-gerenciar-produto">
+                    <input type="hidden" id="gp-id-produto">
+                    <div class="form-grupo">
+                        <label for="gp-nome">Nome:</label>
+                        <input type="text" id="gp-nome" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="gp-preco">Preço (R$):</label>
+                        <input type="number" id="gp-preco" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="gp-estoque">Estoque:</label>
+                        <input type="number" id="gp-estoque" step="1" min="0" required>
+                    </div>
+                    <div class="botoes-carrinho">
+                        <button type="submit" class="btn btn-primario">Salvar Produto</button>
+                        <button type="button" id="btn-limpar-form-gp" class="btn btn-secundario">Limpar</button>
+                    </div>
+                </form>
+                
+                <h3>Produtos Cadastrados</h3>
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th class="col-numero">Preço</th>
+                                <th class="col-numero">Estoque</th>
+                                <th class="col-acoes">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-produtos">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-historico" class="tab-content">
+                <h3>Histórico de Vendas</h3>
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Total</th>
+                                <th>Desconto</th>
+                                <th>Método</th>
+                                <th>Itens</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-historico">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="tab-config" class="tab-content">
+                <h3>Configurações</h3>
+                <div class="form-grupo">
+                    <label style="flex-basis: 150px;">Tema:</label>
+                    <button id="btn-toggle-theme" class="btn btn-secundario" style="flex-grow: 1;">Alternar Modo</button>
+                 </div>
+                <div class="form-grupo">
+                    <label for="config-chave-pix" style="flex-basis: 150px;">Chave PIX:</label>
+                    <input type="text" id="config-chave-pix" placeholder="Email, CPF, Celular, etc.">
+                </div>
+                <button id="btn-salvar-config" class="btn btn-primario">Salvar Configurações</button>
+                <hr style="margin: 1rem 0;">
+                <p><strong>Aviso:</strong> Todos os dados (produtos, vendas, chave PIX e tema) são salvos no seu navegador (localStorage). Eles não são compartilhados online e podem ser perdidos se você limpar o cache do navegador.</p>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <dialog id="modal-pagamento">
+        <h2>Finalizar Venda</h2>
+        <div class="form-grupo">
+            <label style="flex-basis: 150px;">Valor Original:</label>
+            <strong id="pag-valor-original">R$ 0.00</strong>
+        </div>
+        <div class="form-grupo">
+            <label for="pag-desconto" style="flex-basis: 150px;">Desconto (% ou R$):</label>
+            <input type="text" id="pag-desconto" placeholder="Ex: 10% ou 5.50">
+            <button id="btn-aplicar-desconto" class="btn btn-info">Aplicar</button>
+        </div>
+        <div class="form-grupo">
+            <label style="flex-basis: 150px;">Desconto Aplicado:</label>
+            <strong id="pag-valor-desconto">- R$ 0.00</strong>
+        </div>
+        <hr>
+        <div class="form-grupo">
+            <label style="flex-basis: 150px; font-size: 1.2rem;">Total a Pagar:</label>
+            <strong id="pag-total-final" style="font-size: 1.2rem; color: var(--cor-primaria);">R$ 0.00</strong>
+        </div>
+
+        <h3>Método de Pagamento</h3>
+        <div class="container-metodos-pagamento">
+            <label><input type="radio" name="metodo-pagamento" value="Dinheiro" checked> Dinheiro</label>
+            <label><input type="radio" name="metodo-pagamento" value="Cartão"> Cartão</label>
+            <label><input type="radio" name="metodo-pagamento" value="Pix"> Pix</label>
+        </div>
+
+        <div id="campos-dinheiro">
+            <div class="form-grupo">
+                <label for="pag-valor-recebido" style="flex-basis: 150px;">Valor Recebido (R$):</label>
+                <input type="number" id="pag-valor-recebido" step="0.01">
+            </div>
+            <div class="form-grupo">
+                <label style="flex-basis: 150px;">Troco:</label>
+                <strong id="pag-troco" style="font-size: 1.1rem; color: var(--cor-sucesso);">R$ 0.00</strong>
+            </div>
+        </div>
+        
+        <div class="botoes-modal">
+            <button id="btn-cancelar-pagamento" class="btn btn-secundario">Cancelar</button>
+            <button id="btn-confirmar-pagamento" class="btn btn-sucesso">Confirmar Pagamento</button>
+        </div>
+    </dialog>
+
+    <dialog id="modal-ajustar-qtde">
+        <h2 id="ajustar-titulo">Ajustar Quantidade</h2>
+        <input type="hidden" id="ajustar-index-carrinho">
+        <div class="form-grupo">
+            <label for="ajustar-nova-qtde">Nova Quantidade:</label>
+            <input type="number" id="ajustar-nova-qtde" min="0" step="1">
+        </div>
+        <div class="botoes-modal">
+            <button id="btn-cancelar-ajuste" class="btn btn-secundario">Cancelar</button>
+            <button id="btn-confirmar-ajuste" class="btn btn-primario">Confirmar</button>
+        </div>
+    </dialog>
+
+    <dialog id="modal-pix">
+        <h2>Pagamento via PIX</h2>
+        <p>Cliente deve escanear o QR Code abaixo ou usar a chave para pagar o valor total.</p>
+        <div id="total-pix-valor">R$ 0.00</div>
+        <div id="qr-code-pix">
+            </div>
+        <div id="info-pix-key">Chave:</div>
+        <p style="text-align: center; font-size: 0.9rem;">Após o cliente confirmar o pagamento, clique em "Confirmar Recebimento".</p>
+        <div class="botoes-modal">
+            <button id="btn-pix-cancelar" class="btn btn-perigo">Cancelar Venda</button>
+            <button id="btn-pix-confirmado" class="btn btn-sucesso">Confirmar Recebimento</button>
+        </div>
+    </dialog>
+
+    <script src="scripts/script.js"></script>
+</body>
+</html>
